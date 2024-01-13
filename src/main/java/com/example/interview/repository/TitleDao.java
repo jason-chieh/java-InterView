@@ -22,9 +22,7 @@ public interface TitleDao extends JpaRepository<Title, Integer>{
 	//щ布-щ布计+1
 	@Modifying
 	@Transactional
-	@Query(value=" UPDATE interviewvote.title "
-			+ " SET vote_num = vote_num + 1 "
-			+ " WHERE id = :id  ",nativeQuery = true)
+	@Query(value=" UPDATE Title t SET t.voteNum = t.voteNum + 1 WHERE t.id = :id ")//瘤礛盿Τ把计て,硂娩把计て琩高
 	public void vote(
 			@Param("id") int id);
 }
