@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.HtmlUtils;
 
 import com.example.interview.constants.RtnCode;
 import com.example.interview.entity.Title;
@@ -25,6 +26,11 @@ public class VoteServiceImpl implements VoteService {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	//預防XSS方法
+	public static String preventXss(String userInput) {
+        return HtmlUtils.htmlEscape(userInput);
+    }
 
 	//新增
 	@Override
@@ -33,7 +39,10 @@ public class VoteServiceImpl implements VoteService {
 		if(!StringUtils.hasText(req.getTitle().getVoteName())) {
 			return new BasicRes(RtnCode.ERROR_VOTENAME_NONE);
 		}
-		titleDao.save(req.getTitle());
+        // 防範 XSS 攻擊
+		Title title = req.getTitle();
+		title.setVoteName(preventXss(req.getTitle().getVoteName()));
+		titleDao.save(title);
 		return new BasicRes(RtnCode.SUCCESSFUL);
 	}
 
